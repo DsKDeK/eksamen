@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a73e8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Eksamensrækkefølge</title>
+<style>
+:root{
+  --bg:#f4f6f9;--card:#ffffff;--text:#1b1f24;--muted:#6b7480;--line:#e2e6eb;
+  --accent:#1a73e8;--accent-weak:#e6f0fd;--red:#d93025;--yellow:#f2b705;--green:#1e8e3e;
+  --red-t:#fbe3e1;--yellow-t:#fdf1c8;--green-t:#dcf2e2;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --note:#ffd400;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111418;--card:#1c2026;--text:#e8eaed;--muted:#9aa3ad;--line:#2c323a;
+  --accent:#8ab4f8;--accent-weak:#1d2a3d;--red-t:#3d1f1d;--yellow-t:#3a3216;--green-t:#18311f;
+  --shadow:0 1px 3px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --bg:#111418;--card:#1c2026;--text:#e8eaed;--muted:#9aa3ad;--line:#2c323a;
+  --accent:#8ab4f8;--accent-weak:#1d2a3d;--red-t:#3d1f1d;--yellow-t:#3a3216;--green-t:#18311f;
+  --shadow:0 1px 3px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{min-height:100vh;overscroll-behavior:none}
+button{font:inherit;color:inherit}
+.page{display:none;max-width:1100px;margin:0 auto;padding:16px 16px 110px}
+.page.on{display:block}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:8px 0 18px}
+.top h1{font-size:22px;line-height:1.15;margin:0;font-weight:700}
+.top .sub{color:var(--muted);font-size:13px;margin-top:4px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+.iconbtn:active{background:var(--line)}
+.iconbtn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.backrow{display:flex;align-items:center;gap:6px;margin:4px 0 14px}
+.backrow h1{font-size:22px;margin:0}
+.backbtn{display:flex;align-items:center;gap:4px;border:0;background:transparent;padding:8px 16px 8px 6px;margin-left:-6px;border-radius:24px;cursor:pointer;font-size:18px;font-weight:700;color:var(--text)}
+.backbtn:active{background:var(--line)}
+.backbtn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Elev-chips */
+.grid{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr));gap:var(--gap,10px);position:relative;user-select:none;-webkit-user-select:none}
+.chip{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:6px;height:var(--ch,118px);padding:8px 10px 8px 8px;border-radius:14px;overflow:hidden;
+  background:var(--card);box-shadow:var(--shadow);border:1px solid var(--line);cursor:pointer;touch-action:pan-y;
+  transition:background-color .2s,border-color .2s}
+.chip .no{flex:0 0 auto;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:var(--accent-weak);color:var(--accent);
+  font-weight:700;font-size:11px;display:grid;place-items:center}
+html.locked,html.locked body{height:100%;overflow:hidden;overscroll-behavior:none}
+.grid:not(.list) .chip{touch-action:none}
+.chip .hd{display:flex;align-items:center;gap:8px;min-width:0}
+.chip .nt{font-size:13px;color:var(--muted);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:var(--lines,4);-webkit-box-orient:vertical;word-break:break-word;white-space:pre-line}
+.grid.list .chip{flex-direction:row;align-items:center;gap:12px}
+.grid.list .chip .hd{flex:0 0 auto;max-width:55%}
+.grid.list .chip .nt{flex:1;min-width:0;-webkit-line-clamp:1;white-space:normal}
+.chip .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.chip .dot{position:absolute;top:6px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--muted);display:none}
+.chip.hasnote .dot{display:block}
+.chip.c-red{background:var(--red-t);border-color:color-mix(in srgb,var(--red) 35%,transparent)}
+.chip.c-yellow{background:var(--yellow-t);border-color:color-mix(in srgb,var(--yellow) 45%,transparent)}
+.chip.c-green{background:var(--green-t);border-color:color-mix(in srgb,var(--green) 35%,transparent)}
+.chip.c-red .no{background:var(--red);color:#fff}
+.chip.c-yellow .no{background:var(--yellow);color:#1b1f24}
+.chip.c-green .no{background:var(--green);color:#fff}
+.chip.ghost{opacity:0}
+.slot{height:var(--ch,118px);border-radius:16px;border:2px dashed var(--accent);background:var(--accent-weak)}
+.grid.dragging .chip:not(.lift){opacity:.75}
+.chip.slot{opacity:1!important;box-shadow:none;background:var(--accent-weak)!important;border:2px dashed var(--accent)!important}
+.chip.slot>*{visibility:hidden}
+.lift.slot{border:1px solid var(--line)!important}
+.lift{position:fixed;z-index:50;pointer-events:none;transform:scale(1.06) rotate(-2deg);
+  box-shadow:0 12px 28px rgba(0,0,0,.28);opacity:1!important;transition:none}
+.hint{color:var(--muted);font-size:12px;margin:10px 2px 0;text-align:center}
+
+/* Tom side */
+.empty{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:22px;text-align:center}
+.empty h2{margin:4px 0 8px;font-size:17px}
+.empty p{color:var(--muted);margin:0 0 18px;font-size:14px;line-height:1.45}
+.steps{text-align:left;margin:0 auto 18px;max-width:420px;padding-left:22px;color:var(--text);line-height:1.6;font-size:14px}
+
+.btn{border:0;border-radius:24px;padding:12px 20px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-size:14px}
+:root[data-theme="dark"] .btn,.btn{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0b1220}}
+:root[data-theme="dark"] .btn{color:#0b1220}
+.btn.ghostbtn{background:transparent;color:var(--accent)}
+.btn.danger{background:var(--red);color:#fff}
+
+/* Indstillinger */
+.list{background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.row{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--line);cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.row:last-child{border-bottom:0}
+.row:active{background:var(--accent-weak)}
+.row .t{font-weight:600;font-size:15px}
+.row .d{color:var(--muted);font-size:12px;margin-top:2px}
+.row.red .t{color:var(--red)}
+.row svg{width:22px;height:22px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.secttl{font-size:13px;color:var(--muted);margin:18px 4px 8px;text-transform:uppercase;letter-spacing:.04em}
+
+/* Popup */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+.scrim.on{display:flex}
+.dlg{background:var(--card);border-radius:22px;width:100%;max-width:420px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.dlg h2{margin:0 0 4px;font-size:17px}
+.namerow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.nameno{font-size:17px;font-weight:700;flex:0 0 auto}
+.nameinp{flex:1;min-width:0;font:inherit;font-size:17px;font-weight:700;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.nameinp:focus{outline:2px solid var(--accent);border-color:transparent}
+.dlg .full{color:var(--muted);font-size:13px;margin-bottom:16px}
+.dlg p{margin:0 0 16px;color:var(--muted);line-height:1.45}
+.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.ck{display:flex;align-items:center;justify-content:center;gap:8px;height:42px;font-size:14px;border-radius:14px;border:2px solid var(--line);background:transparent;cursor:pointer;font-weight:600}
+.ck .box{width:22px;height:22px;border-radius:6px;border:2px solid currentColor;display:grid;place-items:center}
+.ck .box svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;display:none}
+.ck.red{color:var(--red)}.ck.yellow{color:#b88900}.ck.green{color:var(--green)}
+.ck.on .box{background:currentColor}.ck.on .box svg{display:block}
+.ck.red.on{background:var(--red-t);border-color:var(--red)}
+.ck.yellow.on{background:var(--yellow-t);border-color:var(--yellow)}
+.ck.green.on{background:var(--green-t);border-color:var(--green)}
+textarea{width:100%;min-height:110px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:12px;font:inherit;font-size:14px;resize:vertical}
+textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+.dlgbtns{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.saved{color:var(--muted);font-size:12px;margin-top:6px;min-height:16px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#323232;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:200;display:none;max-width:90vw;text-align:center}
+.toast.on{display:block}
+
+/* Notér (kun testudgaven) */
+.notebtn{position:fixed;left:16px;bottom:20px;z-index:90;background:var(--note);color:#1b1f24;border:0;border-radius:26px;padding:12px 18px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none}
+.notebtn.on{display:block}
+</style>
+</head>
+<body>
+
+<!-- HJEM -->
+<section class="page on" id="p-home">
+  <div class="top">
+    <div>
+      <h1>Eksamensrækkefølge</h1>
+      <div class="sub" id="homeSub">Intet hold endnu</div>
+    </div>
+    <button class="iconbtn" id="gear" aria-label="Indstillinger">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </div>
+
+  <div id="emptyBox" class="empty">
+    <h2>Importér din holdliste</h2>
+    <p>Hent holdlisten fra Studie+ som CSV og vælg filen her.</p>
+    <ol class="steps">
+      <li>Studie+ → <b>Skema</b></li>
+      <li>Tryk <b>Mere (•••)</b> → <b>Vis holdliste</b></li>
+      <li>Tryk <b>Eksport til CSV</b></li>
+      <li>Tryk på knappen nedenfor og vælg filen</li>
+    </ol>
+    <button class="btn" data-import>Importér holdliste</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div class="hint" id="hint">Tryk på en elev for farve og note · hold fingeren nede for at flytte</div>
+</section>
+
+<!-- INDSTILLINGER -->
+<section class="page" id="p-set">
+  <div class="backrow">
+    <button class="backbtn" data-back aria-label="Tilbage til forsiden"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Indstillinger</span></button>
+  </div>
+  <div class="secttl">Hold</div>
+  <div class="list">
+    <button class="row" data-import>
+      <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <div><div class="t">Importér holdliste</div><div class="d" id="setHold">CSV fra Studie+</div></div>
+    </button>
+    <button class="row" id="testHold">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>
+      <div><div class="t">Opret testhold</div><div class="d">30 opdigtede elever til at prøve appen</div></div>
+    </button>
+    <button class="row" id="sortAZ">
+      <svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h4M17 4v16M14 17l3 3 3-3"/></svg>
+      <div><div class="t">Sortér A–Å</div><div class="d">Sæt eleverne i alfabetisk rækkefølge igen</div></div>
+    </button>
+    <button class="row" id="clearColors">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>
+      <div><div class="t">Nulstil farver</div><div class="d">Fjerner alle farver – noterne bliver</div></div>
+    </button>
+  </div>
+  <div class="list">
+    <button class="row red" id="delHold">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+      <div><div class="t">Slet hold</div><div class="d">Sletter elever, farver og noter</div></div>
+    </button>
+  </div>
+</section>
+
+<input type="file" id="csv" accept=".csv,text/csv,text/plain" hidden>
+
+<div class="scrim" id="scrim"><div class="dlg" id="dlg"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+"use strict";
+const KEY = "eksamensraekkefoelge.v1";
+const MAX = 30;
+let S = load();
+
+function load(){
+  try {
+    const v = JSON.parse(localStorage.getItem(KEY));
+    if (v && Array.isArray(v.elever)) {
+      if (!v.v2) { v.elever.forEach(e => e.navn = kortNavn(e.fuld)); v.v2 = true; }
+      return v;
+    }
+  } catch(e){}
+  return { hold: "", elever: [] };
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+const $ = s => document.querySelector(s);
+const grid = $("#grid");
+
+/* ---------- Sider ---------- */
+function go(id){
+  if (id !== "p-home") document.documentElement.classList.remove("locked");
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === id));
+  window.scrollTo(0,0);
+  if (id === "p-set") history.pushState({p:id}, "");
+}
+$("#gear").onclick = () => go("p-set");
+document.querySelectorAll("[data-back]").forEach(b => b.onclick = () => history.back());
+window.addEventListener("popstate", () => { closeDlg(); go("p-home"); render(); });
+
+/* ---------- Visning ---------- */
+function render(){
+  const has = S.elever.length > 0;
+  $("#emptyBox").style.display = has ? "none" : "";
+  $("#hint").style.display = has ? "" : "none";
+  $("#homeSub").textContent = has ? `${S.hold || "Hold"} · ${S.elever.length} elever` : "Intet hold endnu";
+  $("#setHold").textContent = has ? `Nu: ${S.hold || "Hold"} – en ny import erstatter holdet` : "CSV fra Studie+";
+  grid.innerHTML = "";
+  S.elever.forEach((e, i) => grid.appendChild(chipEl(e, i)));
+  layout();
+}
+// Tilpasser chips, så hele holdet kan ses på én skærm – smal skærm = liste
+function layout(){
+  const n = S.elever.length;
+  if (!n || !$("#p-home").classList.contains("on")) return;
+  const W = grid.clientWidth;
+  if (W < 560) {
+    grid.classList.add("list");
+    document.documentElement.classList.remove("locked");
+    grid.style.setProperty("--cols", 1); grid.style.setProperty("--ch", "44px"); grid.style.setProperty("--gap", "6px");
+    return;
+  }
+  grid.classList.remove("list");
+  document.documentElement.classList.add("locked");   // fuld skærm: siden står stille
+  window.scrollTo(0, 0);
+  const gap = 10;
+  const top = grid.getBoundingClientRect().top + window.scrollY;
+  const H = Math.max(320, window.innerHeight - top - 40);
+  let best = null;
+  for (let c = 1; c <= n; c++) {
+    const rows = Math.ceil(n / c);
+    const cw = (W - gap * (c - 1)) / c, chh = (H - gap * (rows - 1)) / rows;
+    if (c > 1 && cw < 115) break;
+    const s = Math.min(cw, chh * 1.4);
+    if (!best || s > best.s) best = { c, chh, s };
+  }
+  const ch = Math.max(48, best.chh);                  // fylder skærmen ud – større/mindre efter antal elever
+  grid.style.setProperty("--cols", best.c);
+  grid.style.setProperty("--ch", ch + "px");
+  grid.style.setProperty("--gap", gap + "px");
+  grid.style.setProperty("--lines", Math.max(1, Math.floor((ch - 44) / 17.5)));
+}
+let rsT;
+window.addEventListener("resize", () => { if (drag) return; clearTimeout(rsT); rsT = setTimeout(layout, 120); });
+function chipEl(e, i){
+  const c = document.createElement("div");
+  c.className = "chip" + (e.farve ? " c-" + e.farve : "") + (e.note && e.note.trim() ? " hasnote" : "");
+  c.dataset.id = e.id;
+  c.innerHTML = `<div class="hd"><span class="no">${i+1}</span><span class="nm"></span></div><div class="nt"></div>`;
+  c.querySelector(".nm").textContent = e.navn;
+  c.querySelector(".nt").textContent = e.note || "";
+  c.title = e.fuld;
+  return c;
+}
+
+/* ---------- Tryk og træk ---------- */
+let press = null, drag = null;
+const HOLD_MS = 380, MOVE_TOL = 10;
+
+grid.addEventListener("pointerdown", ev => {
+  if (ev.pointerType === "touch") return;           // fingre håndteres af touch-koden nedenfor
+  const chip = ev.target.closest(".chip");
+  if (!chip || drag) return;
+  press = { chip, x: ev.clientX, y: ev.clientY, id: ev.pointerId, moved: false,
+    t: setTimeout(() => startDrag(), HOLD_MS) };
+});
+window.addEventListener("pointermove", ev => {
+  if (ev.pointerType === "touch") return;
+  if (drag) { ev.preventDefault(); moveDrag(ev.clientX, ev.clientY); return; }
+  if (press && (Math.abs(ev.clientX - press.x) > MOVE_TOL || Math.abs(ev.clientY - press.y) > MOVE_TOL)) {
+    clearTimeout(press.t); press.moved = true;
+  }
+}, { passive: false });
+window.addEventListener("pointerup", ev => {
+  if (ev.pointerType === "touch") return;
+  if (drag) { endDrag(); return; }
+  if (press) {
+    clearTimeout(press.t);
+    if (!press.moved) openStudent(press.chip.dataset.id);
+    press = null;
+  }
+});
+window.addEventListener("pointercancel", ev => {
+  if (ev.pointerType === "touch") return;
+  if (press) { clearTimeout(press.t); press = null; }
+  if (drag) endDrag();
+});
+// Touch (telefon): hold fingeren stille = træk eleven · bevæg fingeren med det samme = rul listen
+grid.addEventListener("touchstart", ev => {
+  if (drag || ev.touches.length > 1) return;
+  const chip = ev.target.closest(".chip"); if (!chip) return;
+  const t = ev.touches[0];
+  press = { chip, x: t.clientX, y: t.clientY, moved: false, t: setTimeout(() => startDrag(), HOLD_MS) };
+}, { passive: true });
+window.addEventListener("touchmove", ev => {
+  const t = ev.touches[0]; if (!t) return;
+  if (drag) { if (ev.cancelable) ev.preventDefault(); moveDrag(t.clientX, t.clientY); return; }
+  if (press && (Math.abs(t.clientX - press.x) > MOVE_TOL || Math.abs(t.clientY - press.y) > MOVE_TOL)) {
+    clearTimeout(press.t); press.moved = true;
+  }
+}, { passive: false });
+window.addEventListener("touchend", ev => {
+  if (drag) { if (ev.cancelable) ev.preventDefault(); endDrag(); return; }
+  if (press) {
+    clearTimeout(press.t);
+    if (!press.moved) { if (ev.cancelable) ev.preventDefault(); openStudent(press.chip.dataset.id); }
+    press = null;
+  }
+}, { passive: false });
+window.addEventListener("touchcancel", () => {
+  if (press) { clearTimeout(press.t); press = null; }
+  if (drag) endDrag();
+});
+grid.addEventListener("contextmenu", ev => ev.preventDefault());
+
+function startDrag(){
+  if (!press) return;
+  const chip = press.chip, r = chip.getBoundingClientRect();
+  const id = chip.dataset.id;
+  const from = S.elever.findIndex(e => e.id === id);
+  if (navigator.vibrate) try { navigator.vibrate(15); } catch(e){}
+  const lift = chip.cloneNode(true);
+  lift.classList.add("lift");
+  lift.style.width = r.width + "px"; lift.style.height = r.height + "px";
+  lift.style.left = r.left + "px"; lift.style.top = r.top + "px";
+  document.body.appendChild(lift);
+  // Pladsholder, der viser hvor eleven lander – selve chippen bliver pladsholder,
+  // så telefonen bliver ved med at sende fingerens bevægelser
+  const slot = chip;
+  slot.classList.add("slot");
+  grid.classList.add("dragging");
+  drag = { id, from, to: from, lift, slot, chip, dx: press.x - r.left, dy: press.y - r.top, lastX: press.x, lastY: press.y, lock: 0, pend: null, pendT: 0 };
+  press = null;
+  autoScroll();
+}
+function moveDrag(x, y){
+  drag.lastX = x; drag.lastY = y;
+  drag.lift.style.left = (x - drag.dx) + "px";
+  drag.lift.style.top = (y - drag.dy) + "px";
+  const now = performance.now();
+  if (now < drag.lock) return;                       // vent til de andre er gledet på plads
+  const full = [...grid.children];
+  const kids = full.filter(k => k !== drag.slot);
+  // Kun når fingeren er inde på midten af en chip (ikke ved kanten)
+  let h = null;
+  for (const k of kids) {
+    const r = k.getBoundingClientRect(), mx = r.width * 0.25, my = r.height * 0.25;
+    if (x > r.left + mx && x < r.right - mx && y > r.top + my && y < r.bottom - my) { h = k; break; }
+  }
+  let mode = h ? "chip" : null;
+  if (!h && kids.length) {                           // under/efter den sidste elev = sidste plads
+    const r = kids[kids.length - 1].getBoundingClientRect();
+    if (y > r.bottom || (y > r.top && x > r.right)) { h = kids[kids.length - 1]; mode = "end"; }
+  }
+  if (!h) { drag.pend = null; return; }
+  // Fingeren skal blive et øjeblik, før der flyttes
+  if (drag.pend !== h) { drag.pend = h; drag.pendT = now; return; }
+  if (now - drag.pendT < 140) return;
+  const cur = full.indexOf(drag.slot), hi = full.indexOf(h);
+  if (mode === "end" && cur === full.length - 1) return;
+  const first = new Map(kids.map(k => [k, k.getBoundingClientRect()]));
+  grid.removeChild(drag.slot);
+  // Eleven tager pladsen; den elev, der lå der, rykker et nummer
+  if (mode === "end" || hi > cur) h.after(drag.slot); else h.before(drag.slot);
+  drag.to = [...grid.children].indexOf(drag.slot);
+  drag.pend = null;
+  renumberLive();
+  // Rolig glidende animation af de andre elever
+  const DUR = 320;
+  drag.lock = now + DUR;
+  first.forEach((r0, k) => {
+    const r1 = k.getBoundingClientRect();
+    const dx = r0.left - r1.left, dy = r0.top - r1.top;
+    if (!dx && !dy) return;
+    k.animate([{ transform: `translate(${dx}px,${dy}px)` }, { transform: "none" }], { duration: DUR, easing: "cubic-bezier(.25,.8,.3,1)" });
+  });
+}
+function renumberLive(){
+  let n = 0;
+  [...grid.children].forEach(k => {
+    n++;
+    const no = k.querySelector(".no"); if (no) no.textContent = n;
+  });
+  const ln = drag.lift.querySelector(".no"); if (ln) ln.textContent = drag.to + 1;
+}
+function endDrag(){
+  const d = drag; drag = null;
+  grid.classList.remove("dragging");
+  const r = d.slot.getBoundingClientRect();
+  d.lift.style.transition = "left .15s ease-out, top .15s ease-out, transform .15s ease-out";
+  d.lift.style.left = r.left + "px"; d.lift.style.top = r.top + "px"; d.lift.style.transform = "none";
+  setTimeout(() => {
+    d.lift.remove();
+    const [m] = S.elever.splice(d.from, 1);
+    S.elever.splice(d.to, 0, m);
+    save(); render();
+  }, 150);
+}
+function autoScroll(){
+  if (!drag) return;
+  const edge = 100, y = drag.lastY, h = window.innerHeight;
+  let v = 0;
+  if (grid.classList.contains("list")) {             // kun på smal skærm – fuld skærm er låst
+    if (y < edge) v = -Math.ceil((edge - y) / 5);
+    else if (y > h - edge) v = Math.ceil((y - (h - edge)) / 5);
+  }
+  if (v) window.scrollBy(0, v);
+  moveDrag(drag.lastX, drag.lastY);                  // tjekker også, når fingeren står stille
+  requestAnimationFrame(autoScroll);
+}
+
+/* ---------- Popup ---------- */
+const scrim = $("#scrim"), dlg = $("#dlg");
+function openDlg(html){ dlg.innerHTML = html; scrim.classList.add("on"); }
+function closeDlg(){ scrim.classList.remove("on"); dlg.innerHTML = ""; }
+scrim.addEventListener("click", ev => { if (ev.target === scrim) closeDlg(); });
+
+const CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
+function openStudent(id){
+  const e = S.elever.find(x => x.id === id); if (!e) return;
+  const nr = S.elever.indexOf(e) + 1;
+  openDlg(`
+    <div class="namerow"><span class="nameno"></span><input class="nameinp" id="nameInp" maxlength="30" autocomplete="off" aria-label="Navn"></div><div class="full"></div>
+    <div class="checks">
+      <button class="ck red" data-f="red"><span class="box">${CHECK}</span>Rød</button>
+      <button class="ck yellow" data-f="yellow"><span class="box">${CHECK}</span>Gul</button>
+      <button class="ck green" data-f="green"><span class="box">${CHECK}</span>Grøn</button>
+    </div>
+    <textarea id="noteTxt" placeholder="Skriv en note …"></textarea>
+    <div class="saved" id="savedTxt"></div>
+    <div class="dlgbtns"><button class="btn" id="closeBtn">Luk</button></div>`);
+  dlg.querySelector(".nameno").textContent = nr + ".";
+  const ni = $("#nameInp");
+  ni.value = e.navn;
+  ni.oninput = () => { if (ni.value.trim()) { e.navn = ni.value.trim(); save(); render(); flashSaved(); } };
+  ni.onblur = () => { if (!ni.value.trim()) { ni.value = e.navn; } };
+  dlg.querySelector(".full").textContent = e.fuld;
+  const paint = () => dlg.querySelectorAll(".ck").forEach(b => b.classList.toggle("on", b.dataset.f === e.farve));
+  paint();
+  dlg.querySelectorAll(".ck").forEach(b => b.onclick = () => {
+    e.farve = e.farve === b.dataset.f ? "" : b.dataset.f;
+    paint(); save(); render(); flashSaved();
+  });
+  const ta = $("#noteTxt");
+  ta.value = e.note || "";
+  ta.oninput = () => { e.note = ta.value; save(); flashSaved(); };
+  $("#closeBtn").onclick = () => { closeDlg(); render(); };
+}
+let savedT;
+function flashSaved(){
+  const s = $("#savedTxt"); if (!s) return;
+  s.textContent = "Gemt"; clearTimeout(savedT); savedT = setTimeout(() => s.textContent = "", 1200);
+}
+function confirmDlg(title, text, okText, danger, onOk){
+  openDlg(`<h2></h2><p></p><div class="dlgbtns">
+    <button class="btn ghostbtn" id="cNo">Annullér</button>
+    <button class="btn ${danger ? "danger" : ""}" id="cYes"></button></div>`);
+  dlg.querySelector("h2").textContent = title;
+  dlg.querySelector("p").textContent = text;
+  $("#cYes").textContent = okText;
+  $("#cNo").onclick = closeDlg;
+  $("#cYes").onclick = () => { closeDlg(); onOk(); };
+}
+function toast(t){
+  const el = $("#toast"); el.textContent = t; el.classList.add("on");
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("on"), 2600);
+}
+
+/* ---------- Import af holdliste (CSV fra Studie+) ---------- */
+document.querySelectorAll("[data-import]").forEach(b => b.onclick = () => $("#csv").click());
+$("#csv").addEventListener("change", ev => {
+  const f = ev.target.files && ev.target.files[0]; ev.target.value = "";
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    let text;
+    try { text = new TextDecoder("utf-8", { fatal: true }).decode(rd.result); }
+    catch(er){ text = new TextDecoder("windows-1252").decode(rd.result); }
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    const r = parseHoldliste(text, f.name.replace(/\.[^.]+$/, ""));
+    if (!r.navne.length) { openDlg(`<h2>Ingen elever fundet</h2><p>Brug holdlisten fra Studie+ (Eksport til CSV) – navnene står i kolonne D.</p><div class="dlgbtns"><button class="btn" id="ok">OK</button></div>`); $("#ok").onclick = closeDlg; return; }
+    const doImport = () => {
+      let navne = r.navne;
+      let msg = `${navne.length} elever importeret`;
+      if (navne.length > MAX) { msg = `Max ${MAX} elever – de første ${MAX} af ${navne.length} er importeret`; navne = navne.slice(0, MAX); }
+      navne.sort((a, b) => a.fornavn.localeCompare(b.fornavn, "da") || a.efternavn.localeCompare(b.efternavn, "da"));
+      S = { hold: r.hold, v2: true, elever: navne.map((n, i) => ({ id: "e" + Date.now().toString(36) + i, navn: kortNavn(n.fornavn + " " + n.efternavn), fuld: (n.fornavn + " " + n.efternavn).trim(), farve: "", note: "" })) };
+      save(); go("p-home"); history.replaceState(null, ""); render(); toast(msg);
+    };
+    if (S.elever.length) confirmDlg("Erstat holdet?", `${S.hold || "Det nuværende hold"} med farver og noter erstattes af ${r.hold || "den nye holdliste"} (${r.navne.length} elever).`, "Erstat", true, doImport);
+    else doImport();
+  };
+  rd.readAsArrayBuffer(f);
+});
+function parseCsv(text){
+  const first = text.split(/\r?\n/)[0] || "";
+  const delim = (first.match(/;/g)||[]).length >= (first.match(/,/g)||[]).length ? (first.includes("\t") && !first.includes(";") ? "\t" : ";") : ",";
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i+1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === delim) { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i+1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += c;
+  }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+function parseHoldliste(text, fallback){
+  const rows = parseCsv(text);
+  let iF = 3, iE = 4, iH = 1, start = 0;
+  if (rows.length) {
+    const h = rows[0].map(x => x.trim().toUpperCase());
+    if (h.includes("FORNAVN")) { iF = h.indexOf("FORNAVN"); iE = h.indexOf("EFTERNAVN"); iH = h.indexOf("HOLD"); start = 1; }
+  }
+  const navne = [], seen = new Set(), holdCount = {};
+  for (let i = start; i < rows.length; i++) {
+    const r = rows[i];
+    const fornavn = (r[iF] || "").trim();
+    if (!fornavn) continue;
+    const efternavn = iE >= 0 ? (r[iE] || "").trim().replace(/\.$/, "") : "";
+    const k = (fornavn + "|" + efternavn).toLowerCase();
+    if (seen.has(k)) continue; seen.add(k);
+    navne.push({ fornavn, efternavn });
+    const hn = iH >= 0 ? (r[iH] || "").trim() : "";
+    if (hn) holdCount[hn] = (holdCount[hn] || 0) + 1;
+  }
+  const hold = Object.keys(holdCount).sort((a, b) => holdCount[b] - holdCount[a])[0] || fallback;
+  return { navne, hold };
+}
+// Fornavn + forbogstav på efternavn, fx «Anna L.»
+function kortNavn(fuld){
+  const w = String(fuld || "").trim().split(/\s+/).filter(Boolean);
+  if (!w.length) return "";
+  return w.length > 1 ? `${w[0]} ${w[w.length - 1][0].toUpperCase()}.` : w[0];
+}
+
+/* ---------- Indstillinger ---------- */
+$("#testHold").onclick = () => {
+  const navne = ["Alma Bech","Asger Holm","Bertram Lund","Clara Krogh","Daniel Vinther","Ella Juhl","Emil Dahl","Freja Møller","Frederik Skov","Ida Kjær","Isak Bruun","Johan Riis","Karla Ravn","Lasse Thorsen","Laura Friis","Lukas Mortensen","Maja Lindberg","Malthe Ibsen","Nanna Kofoed","Noah Berg","Olivia Storm","Oscar Vestergaard","Rasmus Bang","Sara Dam","Silas Hvid","Sofie Lauridsen","Thor Bisgaard","Vigga Nyborg","William Kragh","Aya Holst"].sort((a, b) => a.localeCompare(b, "da"));
+  const doIt = () => {
+    S = { hold: "Testhold", v2: true, elever: navne.map((n, i) => ({ id: "t" + Date.now().toString(36) + i, navn: kortNavn(n), fuld: n, farve: "", note: "" })) };
+    save(); history.back(); render(); toast("Testhold med 30 elever oprettet");
+  };
+  if (S.elever.length) confirmDlg("Opret testhold?", `${S.hold || "Det nuværende hold"} med farver og noter erstattes af et testhold med 30 opdigtede elever.`, "Opret", true, doIt);
+  else doIt();
+};
+$("#sortAZ").onclick = () => {
+  if (!S.elever.length) return toast("Intet hold endnu");
+  confirmDlg("Sortér A–Å?", "Din egen rækkefølge erstattes af alfabetisk rækkefølge. Farver og noter bliver.", "Sortér", false, () => {
+    S.elever.sort((a, b) => a.fuld.localeCompare(b.fuld, "da")); save(); render(); toast("Sorteret A–Å");
+  });
+};
+$("#clearColors").onclick = () => {
+  if (!S.elever.length) return toast("Intet hold endnu");
+  confirmDlg("Nulstil farver?", "Alle farver fjernes. Noterne bliver.", "Nulstil", true, () => {
+    S.elever.forEach(e => e.farve = ""); save(); render(); toast("Farver nulstillet");
+  });
+};
+$("#delHold").onclick = () => {
+  if (!S.elever.length) return toast("Intet hold endnu");
+  confirmDlg(`Slet ${S.hold || "holdet"}?`, "Alle elever, farver og noter slettes. Det kan ikke fortrydes.", "Slet", true, () => {
+    S = { hold: "", elever: [] }; save(); render(); history.back(); toast("Holdet er slettet");
+  });
+};
+
+render();
+if ("serviceWorker" in navigator && location.protocol === "https:") { try { navigator.serviceWorker.register("sw.js"); } catch(e){} }
+})();
+</script>
+</body>
+</html>

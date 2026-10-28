@@ -148,6 +148,7 @@ textarea:focus{outline:2px solid var(--accent);border-color:transparent}
 .rchip .no{flex:0 0 auto;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:var(--accent-weak);color:var(--accent);font-weight:700;font-size:11px;display:grid;place-items:center}
 .rchip .nm{flex:1;min-width:0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rchip .tm{flex:0 0 auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.result,.tpl,.az,.card,.lift{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .tpl .chip{height:var(--rh,60px);gap:4px;justify-content:flex-start}
 .tpl .chip .tm{margin-left:auto;flex:0 0 auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .tpl:not(.list) .chip{touch-action:none}
@@ -559,6 +560,7 @@ function startDrag(){
   const id = chip.dataset.id;
   const from = S.elever.findIndex(e => e.id === id);
   if (navigator.vibrate) try { navigator.vibrate(15); } catch(e){}
+  try { window.getSelection().removeAllRanges(); } catch(e){}
   const lift = chip.cloneNode(true);
   lift.classList.add("lift");
   lift.style.width = r.width + "px"; lift.style.height = r.height + "px";

@@ -129,6 +129,27 @@ textarea:focus{outline:2px solid var(--accent);border-color:transparent}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#323232;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:200;display:none;max-width:90vw;text-align:center}
 .toast.on{display:block}
 
+/* Forside: Shuffle, A–Å og resultat */
+.topbtns{display:flex;align-items:center;gap:8px}
+.shufbtn{display:flex;align-items:center;gap:8px;border:0;border-radius:24px;padding:10px 18px;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .shufbtn{color:#0b1220}}
+:root[data-theme="dark"] .shufbtn{color:#0b1220}
+.shufbtn[hidden]{display:none}
+.shufbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.az .chip{cursor:default;touch-action:auto!important}
+.hide{visibility:hidden}
+.grid[hidden]{display:none}
+.result{display:grid;grid-template-columns:repeat(var(--dcols,3),minmax(0,1fr));gap:14px}
+.result[hidden]{display:none}
+.day{display:flex;flex-direction:column;gap:8px;min-width:0}
+.dayhd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 4px;height:22px;font-weight:700;font-size:15px}
+.dayhd span{color:var(--muted);font-weight:500;font-size:12px}
+.rchip{display:flex;align-items:center;gap:8px;height:var(--rh,48px);padding:0 12px 0 8px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);min-width:0}
+.rchip .no{flex:0 0 auto;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:var(--accent-weak);color:var(--accent);font-weight:700;font-size:11px;display:grid;place-items:center}
+.rchip .nm{flex:1;min-width:0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rchip .tm{flex:0 0 auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card{position:fixed;display:flex;align-items:center;padding:0 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.28);font-weight:600;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;pointer-events:none;will-change:left,top,transform}
+
 /* Notér (kun testudgaven) */
 .notebtn{position:fixed;left:16px;bottom:20px;z-index:90;background:var(--note);color:#1b1f24;border:0;border-radius:26px;padding:12px 18px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none}
 .notebtn.on{display:block}
@@ -143,9 +164,12 @@ textarea:focus{outline:2px solid var(--accent);border-color:transparent}
       <h1>Eksamensrækkefølge</h1>
       <div class="sub" id="homeSub">Intet hold endnu</div>
     </div>
+    <div class="topbtns">
+    <button class="shufbtn" id="shufBtn" hidden><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle</button>
     <button class="iconbtn" id="gear" aria-label="Indstillinger">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
     </button>
+    </div>
   </div>
 
   <div id="emptyBox" class="empty">
@@ -160,6 +184,15 @@ textarea:focus{outline:2px solid var(--accent);border-color:transparent}
     <button class="btn" data-import>Importér holdliste</button>
   </div>
 
+  <div id="az" class="grid az"></div>
+  <div id="result" class="result" hidden></div>
+</section>
+
+<!-- SKABELON (kun for læreren – bag ⚙) -->
+<section class="page" id="p-tpl">
+  <div class="backrow">
+    <button class="backbtn" data-back aria-label="Tilbage"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Skabelon</span></button>
+  </div>
   <div id="grid" class="grid"></div>
   <div class="hint" id="hint">Tryk på en elev for farve og note · hold fingeren nede for at flytte</div>
 </section>
@@ -168,6 +201,21 @@ textarea:focus{outline:2px solid var(--accent);border-color:transparent}
 <section class="page" id="p-set">
   <div class="backrow">
     <button class="backbtn" data-back aria-label="Tilbage til forsiden"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Indstillinger</span></button>
+  </div>
+  <div class="secttl">Eksamen</div>
+  <div class="list">
+    <button class="row" id="openTpl">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <div><div class="t">Skabelon</div><div class="d">Din rækkefølge med farver og noter – eleverne lander her ved Shuffle</div></div>
+    </button>
+    <button class="row" id="setDays">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+      <div><div class="t">Fordeling pr. dag</div><div class="d" id="daysTxt">9/7/6</div></div>
+    </button>
+    <button class="row" id="resetShow">
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>
+      <div><div class="t">Vis A–Å igen</div><div class="d">Forsiden vender tilbage til alfabetisk rækkefølge, klar til Shuffle</div></div>
+    </button>
   </div>
   <div class="secttl">Hold</div>
   <div class="list">
@@ -181,7 +229,7 @@ textarea:focus{outline:2px solid var(--accent);border-color:transparent}
     </button>
     <button class="row" id="sortAZ">
       <svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h4M17 4v16M14 17l3 3 3-3"/></svg>
-      <div><div class="t">Sortér A–Å</div><div class="d">Sæt eleverne i alfabetisk rækkefølge igen</div></div>
+      <div><div class="t">Sortér skabelonen A–Å</div><div class="d">Sæt skabelonen i alfabetisk rækkefølge igen</div></div>
     </button>
     <button class="row" id="clearColors">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>
@@ -224,44 +272,120 @@ const $ = s => document.querySelector(s);
 const grid = $("#grid");
 
 /* ---------- Sider ---------- */
-function go(id){
-  if (id !== "p-home") document.documentElement.classList.remove("locked");
+function go(id, push = true){
+  document.documentElement.classList.remove("locked");
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === id));
   window.scrollTo(0,0);
-  if (id === "p-set") history.pushState({p:id}, "");
+  if (push && id !== "p-home") history.pushState({p:id}, "");
 }
-$("#gear").onclick = () => go("p-set");
+$("#gear").onclick = () => { if (!busy) { go("p-set"); render(); } };
+$("#openTpl").onclick = () => { go("p-tpl"); render(); };
 document.querySelectorAll("[data-back]").forEach(b => b.onclick = () => history.back());
-window.addEventListener("popstate", () => { closeDlg(); go("p-home"); render(); });
+window.addEventListener("popstate", ev => { closeDlg(); go((ev.state && ev.state.p) || "p-home", false); render(); });
 
 /* ---------- Visning ---------- */
+const az = $("#az"), result = $("#result"), shufBtn = $("#shufBtn");
+let busy = false;
+const pageOn = id => $("#" + id).classList.contains("on");
 function render(){
   const has = S.elever.length > 0;
   $("#emptyBox").style.display = has ? "none" : "";
   $("#hint").style.display = has ? "" : "none";
   $("#homeSub").textContent = has ? `${S.hold || "Hold"} · ${S.elever.length} elever` : "Intet hold endnu";
   $("#setHold").textContent = has ? `Nu: ${S.hold || "Hold"} – en ny import erstatter holdet` : "CSV fra Studie+";
+  $("#daysTxt").textContent = (S.dage || "9/7/6") + " elever – Dag 1 / Dag 2 / Dag 3";
+  // Skabelon (kun læreren)
   grid.innerHTML = "";
   S.elever.forEach((e, i) => grid.appendChild(chipEl(e, i)));
-  layout();
+  if (pageOn("p-tpl")) layout();
+  // Forside: A–Å før Shuffle, resultatet efter
+  renderHome();
 }
-// Tilpasser chips, så hele holdet kan ses på én skærm – smal skærm = liste
-function layout(){
-  const n = S.elever.length;
-  if (!n || !$("#p-home").classList.contains("on")) return;
-  const W = grid.clientWidth;
+function renderHome(){
+  const has = S.elever.length > 0;
+  shufBtn.hidden = !has || !!S.vist || busy;
+  az.innerHTML = ""; result.innerHTML = "";
+  if (!has) { result.hidden = true; return; }
+  if (S.vist) {
+    az.hidden = true; result.hidden = false;
+    buildResult();
+    if (pageOn("p-home")) layoutResult();
+  } else {
+    result.hidden = true; az.hidden = false;
+    [...S.elever].sort((a, b) => a.fuld.localeCompare(b.fuld, "da")).forEach(e => {
+      const c = document.createElement("div");
+      c.className = "chip"; c.dataset.id = e.id;
+      c.innerHTML = `<div class="hd"><span class="nm"></span></div>`;
+      c.querySelector(".nm").textContent = e.navn;
+      az.appendChild(c);
+    });
+    if (pageOn("p-home")) layoutGrid(az, 16);
+  }
+}
+// Fordeling pr. dag, fx 9/7/6 – resten fyldes på ekstra dage
+function dayPlan(n){
+  const parts = String(S.dage || "9/7/6").split(/[^0-9]+/).map(Number).filter(x => x > 0);
+  const res = []; let left = n;
+  for (const p of parts) { if (left <= 0) break; const k = Math.min(p, left); res.push(k); left -= k; }
+  while (left > 0) { const k = Math.min(9, left); res.push(k); left -= k; }
+  return res;
+}
+// Tider som i planen: 30 min pr. elev, 5 min skift, pause 09:55–10:15 og frokost 12:05–12:35
+function startMin(i){ return 8*60 + 10 + 35*i + (i >= 3 ? 25 : 0) + (i >= 6 ? 35 : 0); }
+const hhmm = m => String(Math.floor(m/60)).padStart(2,"0") + ":" + String(m%60).padStart(2,"0");
+function buildResult(){
+  const plan = dayPlan(S.elever.length);
+  let idx = 0;
+  plan.forEach((k, d) => {
+    const day = document.createElement("div"); day.className = "day";
+    const hd = document.createElement("div"); hd.className = "dayhd";
+    hd.innerHTML = `Dag ${d + 1}<span>${hhmm(startMin(0))}–${hhmm(startMin(k - 1) + 30)}</span>`;
+    day.appendChild(hd);
+    for (let j = 0; j < k; j++, idx++) {
+      const e = S.elever[idx];
+      const c = document.createElement("div"); c.className = "rchip"; c.dataset.id = e.id;
+      c.innerHTML = `<span class="no">${idx + 1}</span><span class="nm"></span><span class="tm">${hhmm(startMin(j))}</span>`;
+      c.querySelector(".nm").textContent = e.navn;
+      day.appendChild(c);
+    }
+    result.appendChild(day);
+  });
+}
+function layoutResult(){
+  const plan = dayPlan(S.elever.length);
+  const W = result.clientWidth;
   if (W < 560) {
-    grid.classList.add("list");
     document.documentElement.classList.remove("locked");
-    grid.style.setProperty("--cols", 1); grid.style.setProperty("--ch", "44px"); grid.style.setProperty("--gap", "6px");
+    result.style.setProperty("--dcols", 1); result.style.setProperty("--rh", "44px");
     return;
   }
-  grid.classList.remove("list");
+  document.documentElement.classList.add("locked");
+  window.scrollTo(0, 0);
+  const gap = 8, rows = Math.max(...plan);
+  const top = result.getBoundingClientRect().top + window.scrollY;
+  const H = window.innerHeight - top - 16 - 30;
+  result.style.setProperty("--dcols", plan.length);
+  result.style.setProperty("--rh", Math.max(40, Math.min(110, (H - gap * (rows - 1)) / rows)) + "px");
+}
+// Skabelonen
+function layout(){ layoutGrid(grid, 40); }
+// Tilpasser chips, så hele holdet kan ses på én skærm – smal skærm = liste
+function layoutGrid(el, reserve){
+  const n = el.children.length;
+  if (!n || !el.offsetParent) return;
+  const W = el.clientWidth;
+  if (W < 560) {
+    el.classList.add("list");
+    document.documentElement.classList.remove("locked");
+    el.style.setProperty("--cols", 1); el.style.setProperty("--ch", "44px"); el.style.setProperty("--gap", "6px");
+    return;
+  }
+  el.classList.remove("list");
   document.documentElement.classList.add("locked");   // fuld skærm: siden står stille
   window.scrollTo(0, 0);
   const gap = 10;
-  const top = grid.getBoundingClientRect().top + window.scrollY;
-  const H = Math.max(320, window.innerHeight - top - 40);
+  const top = el.getBoundingClientRect().top + window.scrollY;
+  const H = Math.max(320, window.innerHeight - top - reserve);
   let best = null;
   for (let c = 1; c <= n; c++) {
     const rows = Math.ceil(n / c);
@@ -271,13 +395,71 @@ function layout(){
     if (!best || s > best.s) best = { c, chh, s };
   }
   const ch = Math.max(48, best.chh);                  // fylder skærmen ud – større/mindre efter antal elever
-  grid.style.setProperty("--cols", best.c);
-  grid.style.setProperty("--ch", ch + "px");
-  grid.style.setProperty("--gap", gap + "px");
-  grid.style.setProperty("--lines", Math.max(1, Math.floor((ch - 44) / 17.5)));
+  el.style.setProperty("--cols", best.c);
+  el.style.setProperty("--ch", ch + "px");
+  el.style.setProperty("--gap", gap + "px");
+  el.style.setProperty("--lines", Math.max(1, Math.floor((ch - 44) / 17.5)));
 }
 let rsT;
-window.addEventListener("resize", () => { if (drag) return; clearTimeout(rsT); rsT = setTimeout(layout, 120); });
+window.addEventListener("resize", () => {
+  if (drag || busy) return;
+  clearTimeout(rsT);
+  rsT = setTimeout(() => { if (pageOn("p-tpl")) layout(); else if (pageOn("p-home")) { if (S.vist) layoutResult(); else layoutGrid(az, 16); } }, 120);
+});
+
+/* ---------- Shuffle: kortbunke (ca. 6 sek.) – eleverne lander på skabelonens pladser ---------- */
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const rnd = (a, b) => a + Math.random() * (b - a);
+shufBtn.onclick = async () => {
+  if (busy || !S.elever.length || S.vist) return;
+  busy = true; shufBtn.hidden = true;
+  const from = new Map([...az.children].map(c => [c.dataset.id, c.getBoundingClientRect()]));
+  // Mål pladserne i resultatet (usynligt)
+  S.vist = true;
+  az.hidden = true; result.hidden = false; result.classList.add("hide");
+  buildResult(); layoutResult();
+  const to = new Map([...result.querySelectorAll(".rchip")].map(c => [c.dataset.id, c.getBoundingClientRect()]));
+  // Kortene
+  let z = 100;
+  const cards = S.elever.map(e => {
+    const r = from.get(e.id) || to.get(e.id);
+    const c = document.createElement("div"); c.className = "card"; c.textContent = e.navn;
+    Object.assign(c.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", zIndex: ++z });
+    document.body.appendChild(c); c.dataset.id = e.id; return c;
+  });
+  await wait(30);
+  // 1) Saml i en bunke midt på skærmen
+  const W0 = Math.min(200, window.innerWidth * 0.42), H0 = 52;
+  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  [...cards].sort(() => Math.random() - .5).forEach((c, i) => setTimeout(() => {
+    c.style.transition = "left .55s cubic-bezier(.4,0,.2,1), top .55s cubic-bezier(.4,0,.2,1), width .55s, height .55s, transform .55s";
+    Object.assign(c.style, { left: (cx - W0/2 + rnd(-5, 5)) + "px", top: (cy - H0/2 + rnd(-5, 5)) + "px", width: W0 + "px", height: H0 + "px", transform: `rotate(${rnd(-9, 9)}deg)`, zIndex: ++z });
+  }, i * 14));
+  await wait(550 + cards.length * 14 + 150);
+  // 2) Bland bunken
+  for (let r = 0; r < 9; r++) {
+    const dir = r % 2 ? 1 : -1;
+    const some = [...cards].sort(() => Math.random() - .5).slice(0, Math.ceil(cards.length / 3));
+    some.forEach(c => { c.style.transition = "transform .12s ease-out"; c.style.transform = `translateX(${dir * W0 * 0.75}px) rotate(${dir * rnd(8, 16)}deg)`; });
+    await wait(130);
+    some.forEach(c => { c.style.zIndex = ++z; c.style.transform = `rotate(${rnd(-9, 9)}deg)`; });
+    await wait(115);
+  }
+  await wait(150);
+  // 3) Del ud én ad gangen – i tilfældig rækkefølge
+  const order = [...cards].sort(() => Math.random() - .5);
+  const step = Math.max(60, 2500 / order.length);
+  order.forEach((c, i) => setTimeout(() => {
+    const t = to.get(c.dataset.id);
+    c.style.transition = "left .5s cubic-bezier(.2,.8,.2,1), top .5s cubic-bezier(.2,.8,.2,1), width .5s, height .5s, transform .5s";
+    Object.assign(c.style, { left: t.left + "px", top: t.top + "px", width: t.width + "px", height: t.height + "px", transform: "none", zIndex: ++z });
+  }, i * step));
+  await wait(order.length * step + 600);
+  result.classList.remove("hide");
+  cards.forEach(c => c.remove());
+  busy = false;
+  save(); renderHome();
+};
 function chipEl(e, i){
   const c = document.createElement("div");
   c.className = "chip" + (e.farve ? " c-" + e.farve : "") + (e.note && e.note.trim() ? " hasnote" : "");
@@ -520,7 +702,7 @@ $("#csv").addEventListener("change", ev => {
       let msg = `${navne.length} elever importeret`;
       if (navne.length > MAX) { msg = `Max ${MAX} elever – de første ${MAX} af ${navne.length} er importeret`; navne = navne.slice(0, MAX); }
       navne.sort((a, b) => a.fornavn.localeCompare(b.fornavn, "da") || a.efternavn.localeCompare(b.efternavn, "da"));
-      S = { hold: r.hold, v2: true, elever: navne.map((n, i) => ({ id: "e" + Date.now().toString(36) + i, navn: kortNavn(n.fornavn + " " + n.efternavn), fuld: (n.fornavn + " " + n.efternavn).trim(), farve: "", note: "" })) };
+      S = { hold: r.hold, v2: true, dage: S.dage, elever: navne.map((n, i) => ({ id: "e" + Date.now().toString(36) + i, navn: kortNavn(n.fornavn + " " + n.efternavn), fuld: (n.fornavn + " " + n.efternavn).trim(), farve: "", note: "" })) };
       save(); go("p-home"); history.replaceState(null, ""); render(); toast(msg);
     };
     if (S.elever.length) confirmDlg("Erstat holdet?", `${S.hold || "Det nuværende hold"} med farver og noter erstattes af ${r.hold || "den nye holdliste"} (${r.navne.length} elever).`, "Erstat", true, doImport);
@@ -573,10 +755,25 @@ function kortNavn(fuld){
 }
 
 /* ---------- Indstillinger ---------- */
+$("#setDays").onclick = () => {
+  openDlg(`<h2>Fordeling pr. dag</h2><p>Antal elever pr. eksamensdag, adskilt med skråstreg – fx 9/7/6.</p>
+    <input class="nameinp" id="daysInp" inputmode="numeric" autocomplete="off">
+    <div class="dlgbtns"><button class="btn ghostbtn" id="dNo">Annullér</button><button class="btn" id="dOk">Gem</button></div>`);
+  const inp = $("#daysInp"); inp.value = S.dage || "9/7/6";
+  $("#dNo").onclick = closeDlg;
+  $("#dOk").onclick = () => {
+    const parts = inp.value.split(/[^0-9]+/).map(Number).filter(x => x > 0);
+    if (!parts.length) { inp.focus(); return; }
+    S.dage = parts.join("/"); save(); closeDlg(); render(); toast("Fordeling gemt: " + S.dage);
+  };
+};
+$("#resetShow").onclick = () => {
+  S.vist = false; save(); render(); toast("Forsiden viser A–Å igen – klar til Shuffle");
+};
 $("#testHold").onclick = () => {
   const navne = ["Alma Bech","Asger Holm","Bertram Lund","Clara Krogh","Daniel Vinther","Ella Juhl","Emil Dahl","Freja Møller","Frederik Skov","Ida Kjær","Isak Bruun","Johan Riis","Karla Ravn","Lasse Thorsen","Laura Friis","Lukas Mortensen","Maja Lindberg","Malthe Ibsen","Nanna Kofoed","Noah Berg","Olivia Storm","Oscar Vestergaard","Rasmus Bang","Sara Dam","Silas Hvid","Sofie Lauridsen","Thor Bisgaard","Vigga Nyborg","William Kragh","Aya Holst"].sort((a, b) => a.localeCompare(b, "da"));
   const doIt = () => {
-    S = { hold: "Testhold", v2: true, elever: navne.map((n, i) => ({ id: "t" + Date.now().toString(36) + i, navn: kortNavn(n), fuld: n, farve: "", note: "" })) };
+    S = { hold: "Testhold", v2: true, dage: S.dage, elever: navne.map((n, i) => ({ id: "t" + Date.now().toString(36) + i, navn: kortNavn(n), fuld: n, farve: "", note: "" })) };
     save(); history.back(); render(); toast("Testhold med 30 elever oprettet");
   };
   if (S.elever.length) confirmDlg("Opret testhold?", `${S.hold || "Det nuværende hold"} med farver og noter erstattes af et testhold med 30 opdigtede elever.`, "Opret", true, doIt);

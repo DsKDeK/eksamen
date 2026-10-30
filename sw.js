@@ -1,6 +1,6 @@
 // Gemmer appen på telefonen, så den også åbner uden net.
 // Henter altid den nyeste udgave, når der er net (springer browserens 10-minutters cache over).
-const CACHE = "eksamen-v5";
+const CACHE = "eksamen-v6";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: "reload" })))));

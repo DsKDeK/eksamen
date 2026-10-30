@@ -160,6 +160,69 @@ input,textarea{user-select:text;-webkit-user-select:text}
 /* Notér (kun testudgaven) */
 .notebtn{position:fixed;left:16px;bottom:20px;z-index:90;background:var(--note);color:#1b1f24;border:0;border-radius:26px;padding:12px 18px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none}
 .notebtn.on{display:block}
+
+/* Grupper */
+.top{flex-wrap:wrap}
+.topbtns{margin-left:auto}
+.grpbtn{display:flex;align-items:center;gap:8px;border:0;border-radius:24px;padding:10px 16px;background:var(--accent-weak);color:var(--accent);font-weight:700;font-size:15px;cursor:pointer;white-space:nowrap}
+.grpbtn[hidden]{display:none}
+.grpbtn svg,.gtop .shufbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.gtop{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin:4px 0 14px}
+.gacts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
+.gacts .grpbtn,.gacts .shufbtn{font-size:14px;padding:10px 14px;white-space:nowrap}
+.gwrap{display:flex;flex-direction:column;gap:12px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.zone{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:10px;min-width:0;transition:border-color .15s,background-color .15s,box-shadow .15s}
+.zone.over{border-color:var(--accent);background:var(--accent-weak);box-shadow:0 0 0 2px var(--accent)}
+.zhd{display:flex;align-items:center;gap:8px;height:30px;padding:0 6px;margin:0 0 6px;font-weight:700;font-size:14px;min-width:0}
+.zhd .gt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.zhd .gc{margin-left:auto;flex:0 0 auto;color:var(--muted);font-weight:600;font-size:12px;display:flex;align-items:center;gap:3px}
+.zhd .gc svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+@media (max-width:599px){
+  .gacts{width:100%;flex-wrap:nowrap;align-items:stretch}
+  .gacts>button{flex:1 1 0;justify-content:center;white-space:normal;text-align:center;line-height:1.2;padding:10px 12px;font-size:13.5px;border-radius:20px}
+}
+.pool .zbody{display:grid;grid-template-columns:repeat(var(--pcols,4),minmax(0,1fr));gap:6px}
+.zempty{color:var(--muted);font-size:12px;height:22px;display:grid;place-items:center}
+.groups{display:grid;grid-template-columns:repeat(var(--gcols,3),minmax(0,1fr));gap:12px}
+.groups:empty{display:none}
+.gcard{display:flex;flex-direction:column}
+.gcard .zbody{display:flex;flex-direction:column;gap:6px;flex:1}
+.ghd{border:0;background:transparent;width:100%;text-align:left;cursor:pointer;border-radius:10px;color:var(--text);font:inherit;font-weight:700;font-size:14px}
+.ghd:active{background:var(--line)}
+.gno{flex:0 0 auto;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:var(--accent);color:#fff;font-size:13px;font-weight:800;display:grid;place-items:center}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .gno{color:#0b1220}}
+:root[data-theme="dark"] .gno{color:#0b1220}
+.gchip{display:flex;align-items:center;height:var(--gh,40px);padding:0 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13px;font-weight:600;min-width:0;cursor:grab;touch-action:pan-y}
+.gchip .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.gwrap:not(.list) .gchip{touch-action:none}
+.gchip.from{opacity:.35;border-style:dashed}
+.gchip.lift{background:var(--card)}
+.gph{height:var(--gh,40px);border-radius:12px;border:2px dashed var(--line);color:var(--muted);font-size:12px;display:grid;place-items:center}
+.gwrap.dealing .gchip{visibility:hidden}
+@keyframes gflash{0%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:var(--shadow)}}
+.gcard.flash{animation:gflash 1.1s ease-out}
+.gempty{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:18px;text-align:center;color:var(--muted);font-size:14px;line-height:1.45}
+.gempty b{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
+.gempty[hidden]{display:none}
+.card.gcardx{align-items:flex-start;gap:10px;padding:12px 14px;font-size:15px;font-weight:800;white-space:normal}
+.card.gcardx .gno{transform:scale(0);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.card.gcardx .gno.on{transform:scale(1)}
+.fab{position:fixed;right:20px;bottom:24px;z-index:80;width:58px;height:58px;border-radius:50%;border:0;background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3);display:grid;place-items:center;cursor:pointer}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fab{color:#0b1220}}
+:root[data-theme="dark"] .fab{color:#0b1220}
+.fab svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.stepper{display:flex;align-items:center;justify-content:center;gap:18px;margin:4px 0 16px}
+.stp{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:24px;font-weight:700;cursor:pointer;display:grid;place-items:center}
+.stp:disabled{opacity:.35;cursor:default}
+.stv{display:flex;flex-direction:column;align-items:center;min-width:130px}
+.stv b{font-size:32px;line-height:1.1}
+.stv span{color:var(--muted);font-size:12px}
+.gonote{color:var(--muted);font-size:13px;margin:0 0 8px;text-align:center}
+.gopt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:12px 16px;margin:0 0 8px;border-radius:14px;border:2px solid var(--accent);background:var(--accent-weak);color:var(--text);cursor:pointer;text-align:left}
+.gopt b{font-size:15px;color:var(--accent)}
+.gopt span{font-size:13px;color:var(--muted)}
+.warn{color:#e37400;font-size:13px;font-weight:600;margin:4px 0 0}
+.warn[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -172,6 +235,7 @@ input,textarea{user-select:text;-webkit-user-select:text}
       <div class="sub" id="homeSub">Intet hold endnu</div>
     </div>
     <div class="topbtns">
+    <button class="grpbtn" id="grpBtn" hidden><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>Grupper</button>
     <button class="shufbtn" id="shufBtn" hidden><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle</button>
     <button class="iconbtn" id="gear" aria-label="Indstillinger">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
@@ -202,6 +266,24 @@ input,textarea{user-select:text;-webkit-user-select:text}
   </div>
   <div id="grid" class="result tpl"></div>
   <div class="hint" id="hint">Tryk på en elev for farve og note · hold fingeren nede for at flytte</div>
+</section>
+
+<!-- GRUPPER -->
+<section class="page" id="p-grp">
+  <div class="gtop">
+    <button class="backbtn" data-back aria-label="Tilbage"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Grupper</span></button>
+    <div class="gacts">
+      <button class="grpbtn" id="autoBtn"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2"/><circle cx="15.5" cy="8.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="8.5" cy="15.5" r="1.2"/><circle cx="15.5" cy="15.5" r="1.2"/></svg>Auto-grupper</button>
+      <button class="shufbtn" id="orderBtn"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Opret tilfældig rækkefølge</button>
+    </div>
+  </div>
+  <div id="gWrap" class="gwrap">
+    <div id="pool" class="zone pool"></div>
+    <div id="groups" class="groups"></div>
+    <div id="gEmpty" class="gempty"><b>Ingen grupper endnu</b>Tryk på + for at oprette en gruppe – eller brug Auto-grupper.</div>
+  </div>
+  <div class="hint" id="gHint">Hold fingeren nede på en elev for at flytte den · tryk på en gruppe for at slette den</div>
+  <button class="fab" id="addGrp" aria-label="Ny gruppe"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 </section>
 
 <!-- INDSTILLINGER -->
@@ -307,6 +389,7 @@ function render(){
   if (pageOn("p-tpl")) layout();
   // Forside: A–Å før Shuffle, resultatet efter
   renderHome();
+  renderGroups();
 }
 function renderHome(){
   const has = S.elever.length > 0;
@@ -836,6 +919,405 @@ $("#delHold").onclick = () => {
     S = { hold: "", elever: [] }; save(); render(); history.back(); toast("Holdet er slettet");
   });
 };
+
+/* ---------- Grupper: opret, træk, auto-grupper og tilfældig rækkefølge ---------- */
+const grpBtn = $("#grpBtn"), gWrap = $("#gWrap"), poolEl = $("#pool"), groupsEl = $("#groups");
+let gBusy = false, gp = null, gd = null, gz = 100;
+grpBtn.onclick = () => { if (!busy) { go("p-grp"); render(); } };
+
+const byName = (a, b) => a.fuld.localeCompare(b.fuld, "da");
+const elevBy = id => S.elever.find(e => e.id === id);
+const newGid = () => "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const gName = g => "Gruppe " + (S.grupper.indexOf(g) + 1);
+const antal = n => n + (n === 1 ? " elev" : " elever");
+const isLocked = () => document.documentElement.classList.contains("locked");
+function shuffled(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+// Kun elever på holdet – og hver elev i højst én gruppe
+function gClean(){
+  if (!Array.isArray(S.grupper)) S.grupper = [];
+  const ok = new Set(S.elever.map(e => e.id)), seen = new Set();
+  S.grupper.forEach(g => { g.elever = (g.elever || []).filter(id => ok.has(id) && !seen.has(id) && seen.add(id)); });
+  if (S.gOrden) {
+    const gids = new Set(S.grupper.map(g => g.id));
+    S.gOrden = S.gOrden.filter(id => gids.has(id));
+    if (!S.gOrden.length) S.gOrden = null;
+  }
+}
+// Efter lodtrækning står grupperne i den trukne rækkefølge
+function gList(){
+  if (!S.gOrden) return S.grupper.slice();
+  const pos = new Map(S.gOrden.map((id, i) => [id, i]));
+  const key = g => pos.has(g.id) ? pos.get(g.id) : 1000 + S.grupper.indexOf(g);
+  return S.grupper.slice().sort((a, b) => key(a) - key(b));
+}
+function gChip(e){
+  const c = document.createElement("div");
+  c.className = "gchip"; c.dataset.id = e.id; c.title = e.fuld;
+  c.innerHTML = `<span class="nm"></span>`;
+  c.querySelector(".nm").textContent = e.navn;
+  return c;
+}
+function renderGroups(){
+  const has = S.elever.length > 0;
+  grpBtn.hidden = !has;
+  gClean();
+  poolEl.innerHTML = ""; groupsEl.innerHTML = "";
+  poolEl.hidden = !has;
+  $("#gEmpty").hidden = !has || S.grupper.length > 0;
+  $("#gHint").style.display = has ? "" : "none";
+  if (!has) return;
+  // Uden gruppe (A–Å)
+  const inG = new Set(S.grupper.flatMap(g => g.elever));
+  const free = S.elever.filter(e => !inG.has(e.id)).sort(byName);
+  const hd = document.createElement("div"); hd.className = "zhd";
+  hd.innerHTML = `<span class="gt">Uden gruppe</span><span class="gc"></span>`;
+  hd.querySelector(".gc").textContent = antal(free.length);
+  const body = document.createElement("div"); body.className = "zbody";
+  free.forEach(e => body.appendChild(gChip(e)));
+  poolEl.append(hd, body);
+  if (!free.length) { const z = document.createElement("div"); z.className = "zempty"; z.textContent = "Alle elever er i en gruppe"; poolEl.appendChild(z); }
+  // Grupperne (elever A–Å i hver gruppe)
+  const ord = S.gOrden || [];
+  gList().forEach(g => {
+    const card = document.createElement("div"); card.className = "zone gcard"; card.dataset.g = g.id;
+    const p = ord.indexOf(g.id);
+    const h = document.createElement("button"); h.className = "zhd ghd"; h.dataset.g = g.id;
+    h.innerHTML = (p >= 0 ? `<span class="gno">${p + 1}</span>` : "") + `<span class="gt"></span><span class="gc"></span>`;
+    h.querySelector(".gt").textContent = gName(g);
+    h.querySelector(".gc").innerHTML = `<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>${g.elever.length}`;
+    h.querySelector(".gc").title = antal(g.elever.length);
+    const b = document.createElement("div"); b.className = "zbody";
+    const ms = g.elever.map(elevBy).filter(Boolean).sort(byName);
+    ms.forEach(e => b.appendChild(gChip(e)));
+    if (!ms.length) { const ph = document.createElement("div"); ph.className = "gph"; ph.textContent = "Træk elever hertil"; b.appendChild(ph); }
+    card.append(h, b);
+    groupsEl.appendChild(card);
+  });
+  if (pageOn("p-grp")) layoutGroups();
+}
+// Bred skærm (Fold 7 udfoldet): det hele på én skærm, når det kan lade sig gøre · smal skærm: siden ruller
+function layoutGroups(){
+  if (!S.elever.length || !gWrap.offsetParent) return;
+  const W = gWrap.clientWidth, narrow = W < 560;
+  gWrap.classList.toggle("list", narrow);
+  const gl = gList(), sizes = gl.map(g => g.elever.length);
+  const free = S.elever.length - sizes.reduce((a, b) => a + b, 0);
+  if (narrow) {
+    gWrap.style.setProperty("--pcols", W >= 400 ? 3 : 2);
+    gWrap.style.setProperty("--gcols", W >= 330 ? 2 : 1);
+    gWrap.style.setProperty("--gh", "40px");
+    document.documentElement.classList.remove("locked");
+    return;
+  }
+  const pcols = Math.max(3, Math.floor((W - 22 + 6) / 126));
+  gWrap.style.setProperty("--pcols", pcols);
+  const top = gWrap.getBoundingClientRect().top + window.scrollY;
+  const H = window.innerHeight - top - 100;            // plads til hjælpeteksten og +
+  const maxCols = Math.max(1, Math.min(gl.length || 1, Math.floor((W + 12) / 182)));
+  const CH = 58;                                       // kortets kant, luft og overskrift
+  const total = (h, cols) => {
+    const pr = Math.ceil(free / pcols);
+    let t = CH + (pr ? pr * h + (pr - 1) * 6 : 22);
+    if (!gl.length) return t + 12 + 100;
+    for (let i = 0; i < gl.length; i += cols) {
+      const m = Math.max(1, ...sizes.slice(i, i + cols));
+      t += 12 + CH + m * h + (m - 1) * 6;
+    }
+    return t;
+  };
+  let pick = null;
+  for (let h = 46; h >= 30 && !pick; h--) for (let c = maxCols; c >= 1; c--) if (total(h, c) <= H) { pick = { h, c }; break; }
+  const fits = !!pick;
+  if (!pick) pick = { h: 36, c: maxCols };
+  gWrap.style.setProperty("--gcols", pick.c);
+  gWrap.style.setProperty("--gh", pick.h + "px");
+  document.documentElement.classList.toggle("locked", fits);
+  if (fits) window.scrollTo(0, 0);
+}
+let grT;
+window.addEventListener("resize", () => {
+  if (gd || gBusy) return;
+  clearTimeout(grT);
+  grT = setTimeout(() => { if (pageOn("p-grp")) layoutGroups(); }, 120);
+});
+
+/* Træk elever mellem grupperne – hold fingeren nede */
+gWrap.addEventListener("pointerdown", ev => {
+  if (ev.pointerType === "touch" || gBusy || gd) return;
+  const c = ev.target.closest(".gchip"); if (!c) return;
+  gp = { c, x: ev.clientX, y: ev.clientY, t: setTimeout(gStart, HOLD_MS) };
+});
+gWrap.addEventListener("touchstart", ev => {
+  if (gBusy || gd || ev.touches.length > 1) return;
+  const c = ev.target.closest(".gchip"); if (!c) return;
+  const t = ev.touches[0];
+  // Fuld skærm (ingen rulning): stop telefonens egen tekstmarkering/menu ved langt tryk
+  if (!gWrap.classList.contains("list") && ev.cancelable) ev.preventDefault();
+  gp = { c, x: t.clientX, y: t.clientY, t: setTimeout(gStart, HOLD_MS) };
+}, { passive: false });
+gWrap.addEventListener("selectstart", ev => ev.preventDefault());
+gWrap.addEventListener("contextmenu", ev => ev.preventDefault());
+const gCancelPress = () => { if (gp) { clearTimeout(gp.t); gp = null; } };
+const gFar = (x, y) => gp && (Math.abs(x - gp.x) > MOVE_TOL || Math.abs(y - gp.y) > MOVE_TOL);
+window.addEventListener("pointermove", ev => {
+  if (ev.pointerType === "touch") return;
+  if (gd) { ev.preventDefault(); gMove(ev.clientX, ev.clientY); return; }
+  if (gFar(ev.clientX, ev.clientY)) gCancelPress();
+}, { passive: false });
+window.addEventListener("pointerup", ev => { if (ev.pointerType === "touch") return; if (gd) gEnd(); else gCancelPress(); });
+window.addEventListener("pointercancel", ev => { if (ev.pointerType === "touch") return; gCancelPress(); if (gd) gEnd(true); });
+window.addEventListener("touchmove", ev => {
+  const t = ev.touches[0]; if (!t) return;
+  if (gd) { if (ev.cancelable) ev.preventDefault(); gMove(t.clientX, t.clientY); return; }
+  if (gFar(t.clientX, t.clientY)) gCancelPress();
+}, { passive: false });
+window.addEventListener("touchend", ev => { if (gd) { if (ev.cancelable) ev.preventDefault(); gEnd(); } else gCancelPress(); }, { passive: false });
+window.addEventListener("touchcancel", () => { gCancelPress(); if (gd) gEnd(true); });
+
+function gStart(){
+  if (!gp) return;
+  const c = gp.c, r = c.getBoundingClientRect();
+  if (navigator.vibrate) try { navigator.vibrate(15); } catch(e){}
+  try { window.getSelection().removeAllRanges(); } catch(e){}
+  const lift = c.cloneNode(true);
+  lift.classList.add("lift");
+  Object.assign(lift.style, { width: r.width + "px", height: r.height + "px", left: r.left + "px", top: r.top + "px" });
+  document.body.appendChild(lift);
+  // Selve chippen bliver stående (gennemsigtig), så telefonen bliver ved med at sende fingerens bevægelser
+  c.classList.add("from");
+  gWrap.classList.add("dragging");
+  gd = { id: c.dataset.id, c, lift, src: c.closest(".zone"), over: null, dx: gp.x - r.left, dy: gp.y - r.top, x0: gp.x, y0: gp.y, lastX: gp.x, lastY: gp.y, moved: false };
+  gp = null;
+  gScroll();
+}
+function gMove(x, y){
+  gd.lastX = x; gd.lastY = y;
+  gd.lift.style.left = (x - gd.dx) + "px";
+  gd.lift.style.top = (y - gd.dy) + "px";
+  gHit(x, y);
+}
+// Den gruppe, fingeren er over, lyser op – dér lander eleven
+function gHit(x, y){
+  let over = null;
+  for (const z of gWrap.querySelectorAll(".zone")) {
+    const r = z.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) { over = z; break; }
+  }
+  if (over === gd.src) over = null;
+  if (over !== gd.over) {
+    if (gd.over) gd.over.classList.remove("over");
+    if (over) over.classList.add("over");
+    gd.over = over;
+  }
+}
+function gEnd(cancel){
+  const d = gd; gd = null;
+  gWrap.classList.remove("dragging");
+  if (d.over) d.over.classList.remove("over");
+  if (!cancel && d.over) {
+    S.grupper.forEach(g => { g.elever = g.elever.filter(x => x !== d.id); });
+    const g = d.over.dataset.g ? S.grupper.find(x => x.id === d.over.dataset.g) : null;
+    if (g) g.elever.push(d.id);
+    save();
+  }
+  renderGroups();
+  const nc = gWrap.querySelector(`.gchip[data-id="${d.id}"]`);
+  if (nc) nc.style.visibility = "hidden";
+  const r = (nc || d.c).getBoundingClientRect();
+  d.lift.style.transition = "left .18s ease-out, top .18s ease-out, width .18s, height .18s, transform .18s ease-out";
+  Object.assign(d.lift.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", transform: "none" });
+  setTimeout(() => { d.lift.remove(); if (nc) nc.style.visibility = ""; }, 190);
+}
+// Smal skærm: siden ruller med, når fingeren nærmer sig top/bund (først når fingeren har flyttet sig)
+function gScroll(){
+  if (!gd) return;
+  if (!gd.moved && Math.hypot(gd.lastX - gd.x0, gd.lastY - gd.y0) > 24) gd.moved = true;
+  if (!isLocked() && gd.moved) {
+    const edge = 90, y = gd.lastY, h = window.innerHeight;
+    let v = 0;
+    if (y < edge) v = -Math.ceil((edge - y) / 5);
+    else if (y > h - edge) v = Math.ceil((y - (h - edge)) / 5);
+    if (v) { window.scrollBy(0, v); gHit(gd.lastX, gd.lastY); }
+  }
+  requestAnimationFrame(gScroll);
+}
+
+/* Ny gruppe (blå +) */
+$("#addGrp").onclick = () => {
+  if (gBusy || gd || !S.elever.length) return;
+  gClean();
+  const g = { id: newGid(), elever: [] };
+  S.grupper.push(g); save(); renderGroups();
+  const card = groupsEl.querySelector(`.gcard[data-g="${g.id}"]`);
+  if (card) { card.classList.add("flash"); if (!isLocked()) card.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+  toast(gName(g) + " oprettet");
+};
+
+/* Tryk på en gruppe: se eleverne – og slet gruppen */
+groupsEl.addEventListener("click", ev => {
+  const h = ev.target.closest(".ghd"); if (!h || gBusy || gd) return;
+  const g = S.grupper.find(x => x.id === h.dataset.g); if (!g) return;
+  const navn = gName(g);
+  const names = g.elever.map(elevBy).filter(Boolean).sort(byName).map(e => e.navn);
+  openDlg(`<h2></h2><p></p><div class="dlgbtns"><button class="btn danger" id="gDel">Slet gruppe</button><span style="flex:1"></span><button class="btn" id="gOk">Luk</button></div>`);
+  dlg.querySelector("h2").textContent = navn;
+  dlg.querySelector("p").textContent = names.length ? names.join(", ") : "Ingen elever i gruppen endnu.";
+  $("#gOk").onclick = closeDlg;
+  $("#gDel").onclick = () => confirmDlg(`Slet ${navn}?`, "Eleverne kommer tilbage under «Uden gruppe».", "Slet", true, () => {
+    S.grupper = S.grupper.filter(x => x !== g);
+    if (S.gOrden) { S.gOrden = S.gOrden.filter(id => id !== g.id); if (!S.gOrden.length) S.gOrden = null; }
+    save(); renderGroups(); toast(`${navn} er slettet`);
+  });
+});
+
+/* Auto-grupper: tilfældige elever i grupper – du vælger antal pr. gruppe */
+function sizesTxt(n, g){
+  const base = Math.floor(n / g), extra = n % g;
+  const gr = k => k + (k === 1 ? " gruppe" : " grupper");
+  if (!extra) return `à ${base} elever`;
+  return `${gr(extra)} à ${base + 1} · ${gr(g - extra)} à ${base}`;
+}
+$("#autoBtn").onclick = () => {
+  if (gBusy || gd) return;
+  const n = S.elever.length;
+  if (n < 2) return toast("Der skal være mindst 2 elever på holdet");
+  let k = Math.min(Math.max(2, S.gStr || 4), n);
+  openDlg(`<h2>Auto-grupper</h2><p>Eleverne trækkes tilfældigt i grupper.</p>
+    <div class="stepper"><button class="stp" id="kMinus" aria-label="Færre pr. gruppe">−</button>
+      <div class="stv"><b id="kVal"></b><span>elever pr. gruppe</span></div>
+      <button class="stp" id="kPlus" aria-label="Flere pr. gruppe">+</button></div>
+    <div id="gOpts"></div>
+    <div class="warn" id="gWarn">De nuværende grupper erstattes</div>
+    <div class="dlgbtns"><button class="btn ghostbtn" id="kNo">Annullér</button></div>`);
+  $("#gWarn").hidden = !S.grupper.length;
+  const draw = () => {
+    $("#kVal").textContent = k;
+    $("#kMinus").disabled = k <= 2; $("#kPlus").disabled = k >= n;
+    const box = $("#gOpts"); box.innerHTML = "";
+    const a = Math.max(1, Math.floor(n / k)), b = Math.ceil(n / k);
+    if (a !== b) { const t = document.createElement("div"); t.className = "gonote"; t.textContent = `${n} elever går ikke op i grupper à ${k} – vælg:`; box.appendChild(t); }
+    [...new Set([a, b])].forEach(g => {
+      const btn = document.createElement("button"); btn.className = "gopt";
+      btn.innerHTML = "<b></b><span></span>";
+      btn.querySelector("b").textContent = (a === b ? "Lav " : "") + g + (g === 1 ? " gruppe" : " grupper");
+      btn.querySelector("span").textContent = sizesTxt(n, g);
+      btn.onclick = () => { S.gStr = k; closeDlg(); autoMake(g); };
+      box.appendChild(btn);
+    });
+  };
+  $("#kMinus").onclick = () => { if (k > 2) { k--; draw(); } };
+  $("#kPlus").onclick = () => { if (k < n) { k++; draw(); } };
+  $("#kNo").onclick = closeDlg;
+  draw();
+};
+async function autoMake(g){
+  const n = S.elever.length, ids = shuffled(S.elever.map(e => e.id));
+  const base = Math.floor(n / g), extra = n % g, groups = [];
+  let ix = 0;
+  for (let i = 0; i < g; i++) { const k = base + (i < extra ? 1 : 0); groups.push({ id: newGid() + i, elever: ids.slice(ix, ix + k) }); ix += k; }
+  if (!isLocked()) window.scrollTo(0, 0);
+  const from = new Map([...gWrap.querySelectorAll(".gchip")].map(c => [c.dataset.id, c.getBoundingClientRect()]));
+  S.grupper = groups; S.gOrden = null; save();
+  if (pageOn("p-grp")) await dealStudents(from, groups); else renderGroups();
+  toast(`${g} ${g === 1 ? "gruppe" : "grupper"} oprettet`);
+}
+// Kortbunke: saml – bland – del ud på skift til Gruppe 1, 2, 3 … som et spil kort
+async function dealStudents(from, groups){
+  gBusy = true;
+  gWrap.classList.add("dealing");
+  renderGroups();
+  const to = new Map([...gWrap.querySelectorAll(".gchip")].map(c => [c.dataset.id, c.getBoundingClientRect()]));
+  const cards = S.elever.map(e => {
+    const r = from.get(e.id) || to.get(e.id);
+    const c = document.createElement("div"); c.className = "card"; c.textContent = e.navn; c.dataset.id = e.id;
+    Object.assign(c.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", zIndex: ++gz });
+    document.body.appendChild(c); return c;
+  });
+  await wait(30);
+  const W0 = Math.min(200, window.innerWidth * 0.42);
+  await gather(cards, W0, 48, 12);
+  await riffle(cards, W0, 7);
+  const byId = new Map(cards.map(c => [c.dataset.id, c]));
+  const deal = [], maxM = Math.max(0, ...groups.map(g => g.elever.length));
+  for (let m = 0; m < maxM; m++) groups.forEach(g => { if (g.elever[m]) deal.push(g.elever[m]); });
+  S.elever.forEach(e => { if (!deal.includes(e.id)) deal.push(e.id); });
+  const step = Math.max(55, 2200 / deal.length);
+  deal.forEach((id, i) => setTimeout(() => {
+    const c = byId.get(id), t = to.get(id); if (!c || !t) return;
+    c.style.transition = "left .45s cubic-bezier(.2,.8,.2,1), top .45s cubic-bezier(.2,.8,.2,1), width .45s, height .45s, transform .45s";
+    Object.assign(c.style, { left: t.left + "px", top: t.top + "px", width: t.width + "px", height: t.height + "px", transform: "none", zIndex: ++gz });
+  }, i * step));
+  await wait(deal.length * step + 550);
+  gWrap.classList.remove("dealing");
+  cards.forEach(c => c.remove());
+  gBusy = false;
+}
+async function gather(cards, W0, H0, stagger){
+  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  shuffled(cards).forEach((c, i) => setTimeout(() => {
+    c.style.transition = "left .5s cubic-bezier(.4,0,.2,1), top .5s cubic-bezier(.4,0,.2,1), width .5s, height .5s, transform .5s";
+    Object.assign(c.style, { left: (cx - W0 / 2 + rnd(-5, 5)) + "px", top: (cy - H0 / 2 + rnd(-5, 5)) + "px", width: W0 + "px", height: H0 + "px", transform: `rotate(${rnd(-9, 9)}deg)`, zIndex: ++gz });
+  }, i * stagger));
+  await wait(500 + cards.length * stagger + 150);
+}
+async function riffle(cards, W0, rounds){
+  for (let r = 0; r < rounds; r++) {
+    const dir = r % 2 ? 1 : -1;
+    const some = shuffled(cards).slice(0, Math.max(1, Math.ceil(cards.length / 3)));
+    some.forEach(c => { c.style.transition = "transform .12s ease-out"; c.style.transform = `translateX(${dir * W0 * 0.75}px) rotate(${dir * rnd(8, 16)}deg)`; });
+    await wait(130);
+    some.forEach(c => { c.style.zIndex = ++gz; c.style.transform = `rotate(${rnd(-9, 9)}deg)`; });
+    await wait(115);
+  }
+  await wait(150);
+}
+
+/* Opret tilfældig rækkefølge: fx Gruppe 1–5 fremlægger som 5, 2, 4, 1, 3 */
+$("#orderBtn").onclick = () => {
+  if (gBusy || gd) return;
+  gClean();
+  const ready = S.grupper.filter(g => g.elever.length);
+  if (ready.length < 2) return toast("Lav mindst 2 grupper med elever først");
+  const run = () => drawOrder(ready);
+  if (S.gOrden) confirmDlg("Træk en ny rækkefølge?", "Den nuværende rækkefølge erstattes.", "Træk", false, run);
+  else run();
+};
+async function drawOrder(ready){
+  const order = shuffled(ready.map(g => g.id));
+  if (!isLocked()) window.scrollTo(0, Math.max(0, groupsEl.getBoundingClientRect().top + window.scrollY - 80));
+  const from = new Map([...groupsEl.querySelectorAll(".gcard")].map(c => [c.dataset.g, c.getBoundingClientRect()]));
+  S.gOrden = order; save();
+  if (!pageOn("p-grp")) { renderGroups(); return; }
+  gBusy = true;
+  renderGroups();
+  groupsEl.classList.add("hide");
+  const to = new Map([...groupsEl.querySelectorAll(".gcard")].map(c => [c.dataset.g, c.getBoundingClientRect()]));
+  const cards = ready.map(g => {
+    const r = from.get(g.id) || to.get(g.id);
+    const c = document.createElement("div"); c.className = "card gcardx"; c.dataset.g = g.id;
+    c.innerHTML = `<span class="gno"></span><span class="gt"></span>`;
+    c.querySelector(".gt").textContent = gName(g);
+    Object.assign(c.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", zIndex: ++gz });
+    document.body.appendChild(c); return c;
+  });
+  await wait(30);
+  const W0 = Math.min(220, window.innerWidth * 0.46);
+  await gather(cards, W0, 56, 45);
+  await riffle(cards, W0, 8);
+  const byId = new Map(cards.map(c => [c.dataset.g, c]));
+  const step = 560;
+  order.forEach((id, i) => setTimeout(() => {
+    const c = byId.get(id), t = to.get(id); if (!c || !t) return;
+    const no = c.querySelector(".gno"); no.textContent = i + 1;
+    c.style.transition = "left .5s cubic-bezier(.2,.8,.2,1), top .5s cubic-bezier(.2,.8,.2,1), width .5s, height .5s, transform .5s";
+    Object.assign(c.style, { left: t.left + "px", top: t.top + "px", width: t.width + "px", height: t.height + "px", transform: "none", zIndex: ++gz });
+    setTimeout(() => no.classList.add("on"), 380);
+  }, i * step));
+  await wait(order.length * step + 750);
+  groupsEl.classList.remove("hide");
+  cards.forEach(c => c.remove());
+  gBusy = false;
+}
 
 render();
 if ("serviceWorker" in navigator && location.protocol === "https:") { try { navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(r => r.update()).catch(() => {}); } catch(e){} }
